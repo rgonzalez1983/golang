@@ -1,0 +1,208 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/create_person": {
+            "post": {
+                "description": "Create one person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CRUD"
+                ],
+                "summary": "Create one person",
+                "parameters": [
+                    {
+                        "description": "Create Person",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Person"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete_person": {
+            "post": {
+                "description": "Delete of one person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CRUD"
+                ],
+                "summary": "Delete one person",
+                "parameters": [
+                    {
+                        "description": "Delete Person",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/get_person": {
+            "post": {
+                "description": "Get details of one person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CRUD"
+                ],
+                "summary": "Get details of one person",
+                "parameters": [
+                    {
+                        "description": "Get Person",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                }
+            }
+        },
+        "/list_persons": {
+            "post": {
+                "description": "Get details of all persons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CRUD"
+                ],
+                "summary": "Get details of all persons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.InterfaceAPI"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/update_person": {
+            "post": {
+                "description": "Update of one person",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CRUD"
+                ],
+                "summary": "Update one person",
+                "parameters": [
+                    {
+                        "description": "Update Person",
+                        "name": "parameters",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.InterfaceAPI"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.InterfaceAPI": {
+            "type": "object"
+        },
+        "entity.Person": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "ci": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "ID string `bson:\"_id\" json:\"_id,omitempty\"`",
+                    "type": "string"
+                },
+                "updated": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

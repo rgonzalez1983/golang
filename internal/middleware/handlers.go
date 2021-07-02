@@ -1,18 +1,20 @@
 package middleware
 
 import (
+	"go_project/docs"
 	//"github.com/go-chi/chi"
 	//httpSwagger "github.com/swaggo/http-swagger"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"go_project/db"
-	"go_project/internal/entity"
-	"go_project/internal/persistance"
-	//"go_project/internal/service"
+	//swaggerFiles "github.com/swaggo/files"
+	//ginSwagger "github.com/swaggo/gin-swagger"
 	"encoding/json"
 	"fmt"
 	"github.com/go-kit/kit/log"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"go_project/db"
+	_ "go_project/docs"
+	"go_project/internal/entity"
+	"go_project/internal/persistance"
 	"gopkg.in/mgo.v2"
 	"net/http"
 	"os"
@@ -65,6 +67,7 @@ func (a *App) Initialize(_user, _password string) (err error) {
 	a.Router = muxObj
 	a.initializeLogger()
 	a.initializeRoutes()
+	a.initializeSwagger()
 	a.initializeRepository()
 	return err
 }
@@ -72,13 +75,23 @@ func (a *App) Initialize(_user, _password string) (err error) {
 // routing
 func (a *App) initializeRoutes() {
 	//a.Router.HandleFunc("/api/doc/index.html", httpSwagger.WrapHandler).Methods("GET")
-	//a.Router.PathPrefix("/api").Handler(httpSwagger.WrapHandler)
+	a.Router.PathPrefix("/api").Handler(httpSwagger.WrapHandler)
 	a.Router.HandleFunc("/index", a.getIndex).Methods("GET")
 	a.Router.HandleFunc("/create_person", a.CreatePerson).Methods("POST")
 	a.Router.HandleFunc("/update_person", a.UpdatePerson).Methods("POST")
 	a.Router.HandleFunc("/get_person", a.GetPerson).Methods("POST")
 	a.Router.HandleFunc("/delete_person", a.DeletePerson).Methods("POST")
 	a.Router.HandleFunc("/list_persons", a.ListPersons).Methods("POST")
+}
+
+// swagger
+func (a *App) initializeSwagger() {
+	docs.SwaggerInfo.Title = "API Restful Example (Go with MongoDB)"
+	docs.SwaggerInfo.Description = "Simple CRUD using a data from persons as example"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:9090"
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.Schemes = []string{"http"}
 }
 
 // Logger

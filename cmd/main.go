@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"go_project/cmd/docs"
 	"go_project/internal/middleware"
 	"os"
 	"os/signal"
@@ -10,10 +9,8 @@ import (
 )
 
 func main() {
-	fmt.Println("Start process -->   ")
 
-	docs.SwaggerInfo.Title = "Api Ms GoDataLoad"
-	docs.SwaggerInfo.Version = "1.0"
+	fmt.Println("Start process -->   ")
 
 	//errors := make(chan error)
 

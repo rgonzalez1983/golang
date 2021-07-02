@@ -35,10 +35,10 @@ func (p personRepository) CreatePerson(r *interface{}) (template interface{}, er
 	object.Created, object.Updated = time.Now(), time.Now()
 	found, _ := p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
 	if len(found) > 0 {
-		return object, errors.New("PERSONA EXISTENTE"), http.StatusNotAcceptable
+		return object, errors.New("PERSONA EXISTENTE"), http.StatusInternalServerError
 	}
 	_ = p.connMgo.InsertData(collection, object)
-	return object, nil, http.StatusAccepted
+	return object, nil, http.StatusCreated
 }
 
 func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, error error, status int) {
@@ -49,7 +49,7 @@ func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, er
 	if len(found) > 0 {
 		objectOld := p.ToEntityObject(found[0])
 		if objectOld.ID.String() != objectNew.ID {
-			return objectNew.Values, errors.New("PERSONA EXISTENTE"), http.StatusNotAcceptable
+			return objectNew.Values, errors.New("PERSONA EXISTENTE"), http.StatusInternalServerError
 		}
 	}
 	filter = bson.M{"_id": bson.ObjectIdHex(objectNew.ID)}
@@ -58,15 +58,15 @@ func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, er
 		document, _ := p.ToDocument(objectNew.Values)
 		update := bson.M{"$set": *document}
 		_ = p.connMgo.UpdateData(collection, filter, update)
-		return objectNew, nil, http.StatusAccepted
+		return objectNew, nil, http.StatusCreated
 	}
-	return objectNew, errors.New("ERROR DE SERVIDOR"), http.StatusServiceUnavailable
+	return objectNew, errors.New("ERROR DE SERVIDOR"), http.StatusInternalServerError
 }
 
 func (p personRepository) ListPersons() (templates []interface{}, error error, status int) {
 	collection := "person"
 	found, _ := p.GetFindPersons(collection, bson.M{}, bson.M{}, "lastname", "")
-	return found, nil, http.StatusAccepted
+	return found, nil, http.StatusCreated
 }
 
 func (p personRepository) GetPerson(r *interface{}) (template interface{}, error error, status int) {
@@ -74,9 +74,9 @@ func (p personRepository) GetPerson(r *interface{}) (template interface{}, error
 	filter, _ := p.ToDocument(*r)
 	found, _ := p.GetFindPersons(collection, *filter, bson.M{}, "lastname", "")
 	if len(found) == 0 {
-		return "", errors.New("SIN DATOS EXISTENTES"), http.StatusNotFound
+		return "", errors.New("SIN DATOS EXISTENTES"), http.StatusInternalServerError
 	}
-	return found[0], nil, http.StatusAccepted
+	return found[0], nil, http.StatusCreated
 }
 
 func (p personRepository) DeletePerson(r *interface{}) (template interface{}, error error, status int) {
@@ -85,9 +85,9 @@ func (p personRepository) DeletePerson(r *interface{}) (template interface{}, er
 	found, _ := p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
 	if len(found) > 0 {
 		_ = p.connMgo.DeleteData(collection, objectDelete.ID)
-		return found[0], nil, http.StatusAccepted
+		return found[0], nil, http.StatusCreated
 	}
-	return nil, errors.New("SIN DATOS EXISTENTES"), http.StatusServiceUnavailable
+	return nil, errors.New("SIN DATOS EXISTENTES"), http.StatusInternalServerError
 }
 
 //FUNCIONES AUXILIARES

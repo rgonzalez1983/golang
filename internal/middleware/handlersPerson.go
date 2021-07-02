@@ -9,6 +9,15 @@ import (
 
 // CRUD
 
+// CreatePerson godoc
+// @Summary Create one person
+// @Description Create one person
+// @Tags CRUD
+// @Accept  json
+// @Produce  json
+// @Param parameters body entity.Person true "Create Person"
+// @Success 200 {object} entity.InterfaceAPI
+// @Router /create_person [post]
 func (a *App) CreatePerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, "CreatePerson")
 	//request := &entity.Person{}
@@ -17,6 +26,15 @@ func (a *App) CreatePerson(w http.ResponseWriter, r *http.Request) {
 	a.FinalResponse(w, message, data, err, statusCode)
 }
 
+// UpdatePerson godoc
+// @Summary Update one person
+// @Description Update of one person
+// @Tags CRUD
+// @Accept  json
+// @Produce  json
+// @Param parameters body entity.InterfaceAPI true "Update Person"
+// @Success 200 {object} entity.InterfaceAPI
+// @Router /update_person [post]
 func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, "UpdatePerson")
 	//request := &entity.Person{}
@@ -25,6 +43,14 @@ func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	a.FinalResponse(w, message, data, err, statusCode)
 }
 
+// ListPerson godoc
+// @Summary Get details of all persons
+// @Description Get details of all persons
+// @Tags CRUD
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} entity.InterfaceAPI
+// @Router /list_persons [post]
 func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
 	data, _, statusCode := a.PersonRepository.ListPersons()
 	respondWithJSON(w, http.StatusCreated, entity.JsonResponse{
@@ -33,12 +59,30 @@ func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetPerson godoc
+// @Summary Get details of one person
+// @Description Get details of one person
+// @Tags CRUD
+// @Accept  json
+// @Produce  json
+// @Param parameters body entity.InterfaceAPI true "Get Person"
+// @Success 200 {object} entity.InterfaceAPI
+// @Router /get_person [post]
 func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, "GetPerson")
 	data, err, statusCode := a.PersonRepository.GetPerson(a.FormatRequestPayload(w, r))
 	a.FinalResponse(w, "", data, err, statusCode)
 }
 
+// DeletePerson godoc
+// @Summary Delete one person
+// @Description Delete of one person
+// @Tags CRUD
+// @Accept  json
+// @Produce  json
+// @Param parameters body entity.InterfaceAPI true "Delete Person"
+// @Success 200 {object} entity.InterfaceAPI
+// @Router /delete_person [post]
 func (a *App) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, "DeletePerson")
 	//request := &entity.Person{}
@@ -63,6 +107,7 @@ func (a *App) ValidateRequest(w http.ResponseWriter, r *http.Request, function s
 }
 
 func (a *App) FormatRequestPayload(w http.ResponseWriter, r *http.Request) (request *interface{}) {
+	w.Header().Set("Content-Type", "application/json")
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&request); err != nil {
 		respondWithJSON(w, http.StatusBadRequest, entity.JsonResponse{
