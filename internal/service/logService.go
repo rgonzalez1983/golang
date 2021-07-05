@@ -38,13 +38,13 @@ func (s *logService) SaveLog(tlog TLog) {
 	client := &http.Client{}
 	request, err := http.NewRequest("POST", logsURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		s.logger.Log("error", err)
+		_ = s.logger.Log("error", err)
 	}
 
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
 	_, netErr := client.Do(request)
 	if err != nil {
-		s.logger.Log("error", netErr)
+		_ = s.logger.Log("error", netErr)
 	}
 }

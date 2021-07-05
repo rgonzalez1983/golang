@@ -29,6 +29,7 @@ func NewPersonRepository(connMgo *db.MongoConnection) PersonRepository {
 	}
 }
 
+//Creating Person
 func (p personRepository) CreatePerson(r *interface{}) (template interface{}, error error, status int) {
 	object := p.ToEntityObject(*r)
 	collection, filter := "person", bson.M{"ci": object.CI}
@@ -41,6 +42,7 @@ func (p personRepository) CreatePerson(r *interface{}) (template interface{}, er
 	return object, nil, http.StatusCreated
 }
 
+//Updating Person
 func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, error error, status int) {
 	objectNew := p.ToEntityUpdateObject(*r)
 	collection, filter := "person", bson.M{"ci": objectNew.Values.CI}
@@ -63,12 +65,14 @@ func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, er
 	return objectNew, errors.New("ERROR DE SERVIDOR"), http.StatusInternalServerError
 }
 
+//Listing Persons
 func (p personRepository) ListPersons() (templates []interface{}, error error, status int) {
 	collection := "person"
 	found, _ := p.GetFindPersons(collection, bson.M{}, bson.M{}, "lastname", "")
 	return found, nil, http.StatusCreated
 }
 
+//Getting Person
 func (p personRepository) GetPerson(r *interface{}) (template interface{}, error error, status int) {
 	collection := "person"
 	filter, _ := p.ToDocument(*r)
@@ -79,6 +83,7 @@ func (p personRepository) GetPerson(r *interface{}) (template interface{}, error
 	return found[0], nil, http.StatusCreated
 }
 
+//Deleting Person
 func (p personRepository) DeletePerson(r *interface{}) (template interface{}, error error, status int) {
 	objectDelete := p.ToEntityDeleteObject(*r)
 	collection, filter := "person", bson.M{"_id": bson.ObjectIdHex(objectDelete.ID)}

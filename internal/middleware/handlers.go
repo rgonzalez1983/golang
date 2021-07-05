@@ -1,17 +1,13 @@
 package middleware
 
 import (
-	"go_project/docs"
-	//"github.com/go-chi/chi"
-	//httpSwagger "github.com/swaggo/http-swagger"
-	//swaggerFiles "github.com/swaggo/files"
-	//ginSwagger "github.com/swaggo/gin-swagger"
 	"encoding/json"
 	"fmt"
 	"github.com/go-kit/kit/log"
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go_project/db"
+	"go_project/docs"
 	_ "go_project/docs"
 	"go_project/internal/entity"
 	"go_project/internal/persistance"
@@ -74,7 +70,6 @@ func (a *App) Initialize(_user, _password string) (err error) {
 
 // routing
 func (a *App) initializeRoutes() {
-	//a.Router.HandleFunc("/api/doc/index.html", httpSwagger.WrapHandler).Methods("GET")
 	a.Router.PathPrefix("/api").Handler(httpSwagger.WrapHandler)
 	a.Router.HandleFunc("/index", a.getIndex).Methods("GET")
 	a.Router.HandleFunc("/create_person", a.CreatePerson).Methods("POST")
@@ -90,7 +85,7 @@ func (a *App) initializeSwagger() {
 	docs.SwaggerInfo.Description = "Simple CRUD using a data from persons as example"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:9090"
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 }
 
@@ -110,11 +105,11 @@ func (a *App) initializeRepository() {
 	a.PersonRepository = persistance.NewPersonRepository(a.DB)
 }
 
-// Inicio
+// Init
 func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 
 	item := &entity.JsonResponse{
-		Message:    "API MS-Golang Basic CRUD",
+		Message:    "API Restful Example (Go with MongoDB)",
 		StatusCode: http.StatusOK,
 	}
 	respondWithJSON(w, http.StatusOK, item)

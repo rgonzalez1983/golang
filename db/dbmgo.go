@@ -30,7 +30,7 @@ func NewConnection(info *mgo.DialInfo) (*MongoConnection, error) {
 	return &MongoConnection{sess, sync.Mutex{}}, nil
 }
 
-// DeleteData
+// Deleting Data
 func (con *MongoConnection) DeleteData(collection string, id string) error {
 
 	con.m.Lock()
@@ -42,6 +42,7 @@ func (con *MongoConnection) DeleteData(collection string, id string) error {
 	return err
 }
 
+//Counting Data
 func (con *MongoConnection) CountData(collection string, find string) (col int, err error) {
 
 	con.m.Lock()
@@ -49,13 +50,14 @@ func (con *MongoConnection) CountData(collection string, find string) (col int, 
 	c := con
 
 	if find != "" {
-		col, err = c.DB(BdName).C(collection).Find(bson.M{"cconciliation": find}).Count()
+		col, err = c.DB(BdName).C(collection).Find(bson.M{}).Count()
 	} else {
 		col, err = c.DB(BdName).C(collection).Count()
 	}
 	return col, err
 }
 
+//Finding Data
 func (con *MongoConnection) GetFindData(collection string, query bson.M, selector bson.M, fieldSort string, orderSort string) ([]interface{}, error) {
 
 	con.m.Lock()
@@ -65,6 +67,7 @@ func (con *MongoConnection) GetFindData(collection string, query bson.M, selecto
 	return result, err
 }
 
+//Inserting Data
 func (con *MongoConnection) InsertData(collection string, ui interface{}) (err error) {
 
 	con.m.Lock()
@@ -78,6 +81,7 @@ func (con *MongoConnection) InsertData(collection string, ui interface{}) (err e
 	return err
 }
 
+//Updating Data
 func (con *MongoConnection) UpdateData(collection string, ui interface{}, updt interface{}) (err error) {
 
 	con.m.Lock()
