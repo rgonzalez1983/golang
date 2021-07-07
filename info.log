@@ -1,0 +1,29 @@
+ts=2021-07-07T05:22:45.9877081Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-07T05:22:46.0042133Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-07T05:22:46.0247736Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-07T05:22:46.0426043Z caller=handlers.go:113 type=TEST URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-07T05:22:47.645114Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-07T05:22:47.6622451Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-07T05:22:47.6780439Z caller=handlers.go:113 type=TEST URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-07T05:22:47.6930529Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-07T05:22:47.7202908Z caller=handlers.go:113 type=ERROR URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-07T05:22:47.7367058Z caller=handlers.go:113 type=TEST URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-07T05:22:47.754381Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-07T05:22:48.0983739Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-07T05:22:48.1139555Z caller=handlers.go:113 type=TEST URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-07T05:28:30.9782967Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-07T05:28:30.9969386Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-07T05:28:31.0180841Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-07T05:28:31.0400715Z caller=handlers.go:113 type=TEST URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-07T05:28:31.060194Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-07T05:28:31.0790537Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-07T05:28:31.0939665Z caller=handlers.go:113 type=TEST URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-07T05:28:31.1085272Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-07T05:28:31.1280463Z caller=handlers.go:113 type=ERROR URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-07T05:28:31.1435582Z caller=handlers.go:113 type=TEST URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-07T05:28:31.1580944Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-07T05:28:31.1777838Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-07T05:28:31.194643Z caller=handlers.go:113 type=TEST URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-07T05:28:31.2125634Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-07T05:28:31.2332206Z caller=handlers.go:113 type=ERROR URL=/delete_person message="SIN DATOS EXISTENTES"
+ts=2021-07-07T05:28:31.2521822Z caller=handlers.go:113 type=TEST URL=/delete_person message="SIN DATOS EXISTENTES"

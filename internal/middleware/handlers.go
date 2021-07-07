@@ -9,11 +9,15 @@ import (
 	"go_project/db"
 	"go_project/docs"
 	_ "go_project/docs"
+	"go_project/internal"
 	"go_project/internal/entity"
 	"go_project/internal/persistance"
 	"gopkg.in/mgo.v2"
+	"io"
 	"net/http"
 	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -46,9 +50,9 @@ func CORS(next http.Handler) http.Handler {
 }
 
 func (a *App) Initialize(_user, _password string) (err error) {
-	fmt.Println("Starting the application....")
-	host := os.Getenv("MONGO_HOST") + ":27017"
-	dbs := os.Getenv("MONGO_DATABASE")
+	fmt.Println(internal.MsgResponseStartApplication)
+	host := os.Getenv(internal.MONGO_HOST) + os.Getenv(internal.MONGO_PORT)
+	dbs := os.Getenv(internal.MONGO_DATABASE)
 	info := &mgo.DialInfo{
 		Addrs:    []string{host},
 		Timeout:  60 * time.Hour,
@@ -57,11 +61,12 @@ func (a *App) Initialize(_user, _password string) (err error) {
 		Password: _password,
 	}
 	a.DB, _ = db.NewConnection(info)
-	fmt.Println("Connected to MongoDB!")
+	fmt.Println(internal.MsgResponseConnectedMongoDB)
 	muxObj := mux.NewRouter()
 	muxObj.Use(CORS)
 	a.Router = muxObj
-	a.initializeLogger()
+	values := []interface{}{internal.KeyType, internal.SUCCESS, internal.KeyURL, internal.URLStartingNow, internal.KeyMessage, internal.MsgResponseStartingNow}
+	a.LoggingOperation(values...)
 	a.initializeRoutes()
 	a.initializeSwagger()
 	a.initializeRepository()
@@ -70,13 +75,13 @@ func (a *App) Initialize(_user, _password string) (err error) {
 
 // routing
 func (a *App) initializeRoutes() {
-	a.Router.PathPrefix("/api").Handler(httpSwagger.WrapHandler)
-	a.Router.HandleFunc("/index", a.getIndex).Methods("GET")
-	a.Router.HandleFunc("/create_person", a.CreatePerson).Methods("POST")
-	a.Router.HandleFunc("/update_person", a.UpdatePerson).Methods("POST")
-	a.Router.HandleFunc("/get_person", a.GetPerson).Methods("POST")
-	a.Router.HandleFunc("/delete_person", a.DeletePerson).Methods("POST")
-	a.Router.HandleFunc("/list_persons", a.ListPersons).Methods("POST")
+	a.Router.PathPrefix(internal.URLApi).Handler(httpSwagger.WrapHandler)
+	a.Router.HandleFunc(internal.URLIndex, a.getIndex).Methods(internal.HTTP_GET)
+	a.Router.HandleFunc(internal.URLCreatingOne, a.CreatePerson).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLUpdatingOne, a.UpdatePerson).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLGettingOne, a.GetPerson).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLDeletingOne, a.DeletePerson).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLListingAll, a.ListPersons).Methods(internal.HTTP_POST)
 }
 
 // swagger
@@ -90,14 +95,23 @@ func (a *App) initializeSwagger() {
 }
 
 // Logger
-func (a *App) initializeLogger() {
+func (a *App) initializeLogger() (f *os.File) {
+	f, _ = os.OpenFile(a.RootDir()+"/info.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	wrt := io.MultiWriter(os.Stdout, f)
 	var logger log.Logger
 	{
-		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.NewLogfmtLogger(wrt)
 		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 	a.Logg = logger
+	return f
+}
+
+func (a *App) LoggingOperation(values ...interface{}) {
+	f := *a.initializeLogger()
+	_ = a.Logg.Log(values...)
+	defer f.Close()
 }
 
 // Repository
@@ -113,6 +127,14 @@ func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 		StatusCode: http.StatusOK,
 	}
 	respondWithJSON(w, http.StatusOK, item)
+}
+
+//ROOT DIR
+func (a *App) RootDir() string {
+	_, b, _, _ := runtime.Caller(0)
+	return filepath.Join(filepath.Dir(b), "../..")
+	//d := path.Join(path.Dir(b))
+	//return filepath.Dir(d)
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

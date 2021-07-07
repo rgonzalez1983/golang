@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/mitchellh/mapstructure"
 	"go_project/db"
+	"go_project/internal"
 	"go_project/internal/entity"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -32,11 +33,11 @@ func NewPersonRepository(connMgo *db.MongoConnection) PersonRepository {
 //Creating Person
 func (p personRepository) CreatePerson(r *interface{}) (template interface{}, error error, status int) {
 	object := p.ToEntityObject(*r)
-	collection, filter := "person", bson.M{"ci": object.CI}
+	collection, filter := internal.CollectionPerson, bson.M{internal.FieldCi: object.CI}
 	object.Created, object.Updated = time.Now(), time.Now()
-	found, _ := p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
+	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
-		return object, errors.New("PERSONA EXISTENTE"), http.StatusInternalServerError
+		return object, errors.New(internal.MsgResponseObjectExists), http.StatusInternalServerError
 	}
 	_ = p.connMgo.InsertData(collection, object)
 	return object, nil, http.StatusCreated
@@ -45,40 +46,40 @@ func (p personRepository) CreatePerson(r *interface{}) (template interface{}, er
 //Updating Person
 func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, error error, status int) {
 	objectNew := p.ToEntityUpdateObject(*r)
-	collection, filter := "person", bson.M{"ci": objectNew.Values.CI}
+	collection, filter := internal.CollectionPerson, bson.M{internal.FieldCi: objectNew.Values.CI}
 	objectNew.Values.Updated = time.Now()
-	found, _ := p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
+	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
 		objectOld := p.ToEntityObject(found[0])
 		if objectOld.ID.String() != objectNew.ID {
-			return objectNew.Values, errors.New("PERSONA EXISTENTE"), http.StatusInternalServerError
+			return objectNew.Values, errors.New(internal.MsgResponseObjectExists), http.StatusInternalServerError
 		}
 	}
-	filter = bson.M{"_id": bson.ObjectIdHex(objectNew.ID)}
-	found, _ = p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
+	filter = bson.M{internal.Field__id: bson.ObjectIdHex(objectNew.ID)}
+	found, _ = p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
 		document, _ := p.ToDocument(objectNew.Values)
-		update := bson.M{"$set": *document}
+		update := bson.M{internal.MongoDB__set: *document}
 		_ = p.connMgo.UpdateData(collection, filter, update)
 		return objectNew, nil, http.StatusCreated
 	}
-	return objectNew, errors.New("ERROR DE SERVIDOR"), http.StatusInternalServerError
+	return objectNew, errors.New(internal.MsgResponseServerError), http.StatusInternalServerError
 }
 
 //Listing Persons
 func (p personRepository) ListPersons() (templates []interface{}, error error, status int) {
-	collection := "person"
-	found, _ := p.GetFindPersons(collection, bson.M{}, bson.M{}, "lastname", "")
+	collection := internal.CollectionPerson
+	found, _ := p.GetFindPersons(collection, bson.M{}, bson.M{}, internal.FieldLastname, internal.OrderAsc)
 	return found, nil, http.StatusCreated
 }
 
 //Getting Person
 func (p personRepository) GetPerson(r *interface{}) (template interface{}, error error, status int) {
-	collection := "person"
+	collection := internal.CollectionPerson
 	filter, _ := p.ToDocument(*r)
-	found, _ := p.GetFindPersons(collection, *filter, bson.M{}, "lastname", "")
+	found, _ := p.GetFindPersons(collection, *filter, bson.M{}, internal.FieldLastname, internal.OrderAsc)
 	if len(found) == 0 {
-		return "", errors.New("SIN DATOS EXISTENTES"), http.StatusInternalServerError
+		return internal.ValueEmpty, errors.New(internal.MsgResponseNoData), http.StatusInternalServerError
 	}
 	return found[0], nil, http.StatusCreated
 }
@@ -86,13 +87,13 @@ func (p personRepository) GetPerson(r *interface{}) (template interface{}, error
 //Deleting Person
 func (p personRepository) DeletePerson(r *interface{}) (template interface{}, error error, status int) {
 	objectDelete := p.ToEntityDeleteObject(*r)
-	collection, filter := "person", bson.M{"_id": bson.ObjectIdHex(objectDelete.ID)}
-	found, _ := p.GetFindPersons(collection, filter, bson.M{}, "updated", "-")
+	collection, filter := internal.CollectionPerson, bson.M{internal.Field__id: bson.ObjectIdHex(objectDelete.ID)}
+	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
 		_ = p.connMgo.DeleteData(collection, objectDelete.ID)
 		return found[0], nil, http.StatusCreated
 	}
-	return nil, errors.New("SIN DATOS EXISTENTES"), http.StatusInternalServerError
+	return nil, errors.New(internal.MsgResponseNoData), http.StatusInternalServerError
 }
 
 //FUNCIONES AUXILIARES

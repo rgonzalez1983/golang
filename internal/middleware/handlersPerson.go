@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"go_project/internal"
 	"go_project/internal/entity"
 	"net/http"
 	"time"
@@ -19,10 +20,18 @@ import (
 // @Success 200 {object} entity.InterfaceAPI
 // @Router /create_person [post]
 func (a *App) CreatePerson(w http.ResponseWriter, r *http.Request) {
-	a.ValidateRequest(w, r, "CreatePerson")
-	//request := &entity.Person{}
+	a.ValidateRequest(w, r, internal.FuncCreatePerson)
 	data, err, statusCode := a.PersonRepository.CreatePerson(a.FormatRequestPayload(w, r))
-	message := "PERSONA INSERTADA CORRECTAMENTE"
+	indicator := a.IndicatorType(statusCode)
+	message := func() string {
+		if indicator == internal.ERROR {
+			return err.Error()
+		} else {
+			return internal.MsgResponseCreatingOne
+		}
+	}()
+	values := []interface{}{internal.KeyType, indicator, internal.KeyURL, internal.URLCreatingOne, internal.KeyMessage, message}
+	a.LoggingOperation(values...)
 	a.FinalResponse(w, message, data, err, statusCode)
 }
 
@@ -36,10 +45,18 @@ func (a *App) CreatePerson(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} entity.InterfaceAPI
 // @Router /update_person [post]
 func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
-	a.ValidateRequest(w, r, "UpdatePerson")
-	//request := &entity.Person{}
+	a.ValidateRequest(w, r, internal.FuncUpdatePerson)
 	data, err, statusCode := a.PersonRepository.UpdatePerson(a.FormatRequestPayload(w, r))
-	message := "PERSONA EDITADA CORRECTAMENTE"
+	indicator := a.IndicatorType(statusCode)
+	message := func() string {
+		if indicator == internal.ERROR {
+			return err.Error()
+		} else {
+			return internal.MsgResponseUpdatingOne
+		}
+	}()
+	values := []interface{}{internal.KeyType, indicator, internal.KeyURL, internal.URLUpdatingOne, internal.KeyMessage, message}
+	a.LoggingOperation(values...)
 	a.FinalResponse(w, message, data, err, statusCode)
 }
 
@@ -52,11 +69,12 @@ func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} entity.InterfaceAPI
 // @Router /list_persons [post]
 func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
+	a.ValidateRequest(w, r, internal.FuncListPersons)
 	data, _, statusCode := a.PersonRepository.ListPersons()
-	respondWithJSON(w, http.StatusCreated, entity.JsonResponse{
-		StatusCode: statusCode,
-		Data:       data,
-	})
+	indicator := a.IndicatorType(statusCode)
+	values := []interface{}{internal.KeyType, indicator, internal.KeyURL, internal.URLListingAll, internal.KeyMessage, internal.MsgResponseListingAll}
+	a.LoggingOperation(values...)
+	a.FinalResponse(w, internal.ValueEmpty, data, nil, statusCode)
 }
 
 // GetPerson godoc
@@ -69,9 +87,19 @@ func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} entity.InterfaceAPI
 // @Router /get_person [post]
 func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
-	a.ValidateRequest(w, r, "GetPerson")
+	a.ValidateRequest(w, r, internal.FuncGetPerson)
 	data, err, statusCode := a.PersonRepository.GetPerson(a.FormatRequestPayload(w, r))
-	a.FinalResponse(w, "", data, err, statusCode)
+	indicator := a.IndicatorType(statusCode)
+	message := func() string {
+		if indicator == internal.ERROR {
+			return err.Error()
+		} else {
+			return internal.MsgResponseGettingOne
+		}
+	}()
+	values := []interface{}{internal.KeyType, indicator, internal.KeyURL, internal.URLGettingOne, internal.KeyMessage, message}
+	a.LoggingOperation(values...)
+	a.FinalResponse(w, message, data, err, statusCode)
 }
 
 // DeletePerson godoc
@@ -84,25 +112,35 @@ func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} entity.InterfaceAPI
 // @Router /delete_person [post]
 func (a *App) DeletePerson(w http.ResponseWriter, r *http.Request) {
-	a.ValidateRequest(w, r, "DeletePerson")
-	//request := &entity.Person{}
+	a.ValidateRequest(w, r, internal.FuncDeletePerson)
 	data, err, statusCode := a.PersonRepository.DeletePerson(a.FormatRequestPayload(w, r))
-	message := "PERSONA BORRADA CORRECTAMENTE"
+	indicator := a.IndicatorType(statusCode)
+	message := func() string {
+		if indicator == internal.ERROR {
+			return err.Error()
+		} else {
+			return internal.MsgResponseDeletingOne
+		}
+	}()
+	values := []interface{}{internal.KeyType, indicator, internal.KeyURL, internal.URLDeletingOne, internal.KeyMessage, message}
+	a.LoggingOperation(values...)
 	a.FinalResponse(w, message, data, err, statusCode)
 }
 
 // FUNCIONES EXTRAS
 
 func (a *App) ValidateRequest(w http.ResponseWriter, r *http.Request, function string) {
-	if (*r).Method == "OPTIONS" {
+	if (*r).Method == internal.OPTIONS {
 		respondWithJSON(w, http.StatusInternalServerError, entity.JsonResponse{
-			Message:    "ERROR EN LA PETICION",
+			Message:    internal.MsgResponseServerError,
 			StatusCode: http.StatusInternalServerError,
 		})
 		return
 	}
 	defer func(begin time.Time) {
-		a.Logg.Log("method", function, "took", time.Since(begin))
+		values := []interface{}{internal.KeyMethod, function, internal.KeyTook, time.Since(begin)}
+		//_ = a.Logg.Log(values)
+		a.LoggingOperation(values...)
 	}(time.Now())
 }
 
@@ -111,7 +149,7 @@ func (a *App) FormatRequestPayload(w http.ResponseWriter, r *http.Request) (requ
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&request); err != nil {
 		respondWithJSON(w, http.StatusBadRequest, entity.JsonResponse{
-			Message:    "PAYLOAD/REQUEST INVALIDO",
+			Message:    internal.MsgResponseInvalidRequest,
 			StatusCode: http.StatusBadRequest,
 		})
 		return
@@ -134,4 +172,14 @@ func (a *App) FinalResponse(w http.ResponseWriter, message string, data interfac
 		StatusCode: statusCode,
 		Data:       data,
 	})
+}
+
+func (a *App) IndicatorType(statusCode int) string {
+	return func() string {
+		if statusCode == 500 {
+			return internal.ERROR
+		} else {
+			return internal.SUCCESS
+		}
+	}()
 }
