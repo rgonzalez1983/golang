@@ -34,7 +34,7 @@ func ResponseToJSON(responseBody string) map[string]interface{} {
 }
 
 func TestListPersons(t *testing.T) {
-	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLListingAll, nil)
+	request, _ := http.NewRequest(internal.HTTP_GET, internal.URLListingAll, nil)
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
 	values := []interface{}{internal.KeyType, internal.TEST, internal.KeyURL, internal.URLListingAll, internal.KeyMessage, internal.MsgResponseListingAll}
@@ -46,8 +46,8 @@ func TestListPersons(t *testing.T) {
 }
 
 func TestGetPerson(t *testing.T) {
-	payload := []byte(`{"age":37}`)
-	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLGettingOne, bytes.NewBuffer(payload))
+	url := internal.URLGettingOne + "/60e63f2ebefb1fb4a19de900"
+	request, _ := http.NewRequest(internal.HTTP_GET, url, nil)
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
 	message := func() string {
@@ -95,13 +95,11 @@ func TestCreatePerson(t *testing.T) {
 }
 
 func TestUpdatePerson(t *testing.T) {
+	url := internal.URLUpdatingOne + "/60e661b0befb1fb4a19df241"
 	payload := []byte(`{
-						"id" : "60de3ce4befb1fb4a19d8dfd",
-						"values" : {
-							"name" : "ANA M."
-                         }
+						"name" : "ANA M."
 						}`)
-	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLUpdatingOne, bytes.NewBuffer(payload))
+	request, _ := http.NewRequest(internal.HTTP_POST, url, bytes.NewBuffer(payload))
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
 	responseBody := ResponseToJSON(response.Body.String())
@@ -118,14 +116,12 @@ func TestUpdatePerson(t *testing.T) {
 	a.LoggingOperation(values...)
 	assert.Equal(t, response.Code, response.Code, "EXPECTED "+strconv.FormatFloat(responseBody[internal.KeyResponseStatusCode].(interface{}).(float64), 'E', -1, 64))
 	assert.Equal(t, message, responseBody[internal.KeyResponseMessage].(interface{}), "EXPECTED "+message)
-	assert.Equal(t, "ANA M.", responseBody[internal.KeyResponseData].(map[string]interface{})[internal.KeyValues].(map[string]interface{})["name"], "EXPECTED ANA M.")
+	assert.Equal(t, "ANA M.", responseBody[internal.KeyResponseData].(map[string]interface{})["name"], "EXPECTED ANA M.")
 }
 
 func TestDeletePerson(t *testing.T) {
-	payload := []byte(`{
-						"id" : "60de364abefb1fb4a19d8bb7"
-						}`)
-	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLDeletingOne, bytes.NewBuffer(payload))
+	url := internal.URLDeletingOne + "/60de364abefb1fb4a19d8bb7"
+	request, _ := http.NewRequest(internal.HTTP_DELETE, url, nil)
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
 	message := func() string {

@@ -58,8 +58,8 @@ var doc = `{
                 }
             }
         },
-        "/delete_person": {
-            "post": {
+        "/delete_person/{id}": {
+            "delete": {
                 "description": "Delete of one person",
                 "consumes": [
                     "application/json"
@@ -73,13 +73,11 @@ var doc = `{
                 "summary": "Delete one person",
                 "parameters": [
                     {
-                        "description": "Delete Person",
-                        "name": "parameters",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.InterfaceAPI"
-                        }
+                        "type": "string",
+                        "description": "ID Person",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -92,8 +90,8 @@ var doc = `{
                 }
             }
         },
-        "/get_person": {
-            "post": {
+        "/get_person/{id}": {
+            "get": {
                 "description": "Get details of one person",
                 "consumes": [
                     "application/json"
@@ -107,13 +105,11 @@ var doc = `{
                 "summary": "Get details of one person",
                 "parameters": [
                     {
-                        "description": "Get Person",
-                        "name": "parameters",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.InterfaceAPI"
-                        }
+                        "type": "string",
+                        "description": "ID Person",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -127,7 +123,7 @@ var doc = `{
             }
         },
         "/list_persons": {
-            "post": {
+            "get": {
                 "description": "Get details of all persons",
                 "consumes": [
                     "application/json"
@@ -152,7 +148,7 @@ var doc = `{
                 }
             }
         },
-        "/update_person": {
+        "/update_person/{id}": {
             "post": {
                 "description": "Update of one person",
                 "consumes": [
@@ -167,12 +163,19 @@ var doc = `{
                 "summary": "Update one person",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ID Person",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Update Person",
                         "name": "parameters",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.InterfaceAPI"
+                            "$ref": "#/definitions/entity.Person"
                         }
                     }
                 ],
@@ -209,6 +212,9 @@ var doc = `{
                 "created": {
                     "type": "string"
                 },
+                "gender": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -216,7 +222,6 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
-                    "description": "ID string ` + "`" + `bson:\"_id\" json:\"_id,omitempty\"` + "`" + `",
                     "type": "string"
                 },
                 "updated": {

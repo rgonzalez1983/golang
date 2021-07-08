@@ -14,10 +14,10 @@ import (
 
 type PersonRepository interface {
 	CreatePerson(r *interface{}) (template interface{}, error error, status int)
-	UpdatePerson(r *interface{}) (template interface{}, error error, status int)
+	UpdatePerson(id string, r *interface{}) (template interface{}, error error, status int)
 	ListPersons() (templates []interface{}, error error, status int)
-	GetPerson(r *interface{}) (template interface{}, error error, status int)
-	DeletePerson(r *interface{}) (template interface{}, error error, status int)
+	GetPerson(id string) (template interface{}, error error, status int)
+	DeletePerson(id string) (template interface{}, error error, status int)
 }
 
 type personRepository struct {
@@ -43,17 +43,17 @@ func (p personRepository) CreatePerson(r *interface{}) (template interface{}, er
 }
 
 //Updating Person
-func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, error error, status int) {
-	objectNew := p.ToEntityUpdateObject(*r)
-	objectNew.Values.Updated = time.Now()
-	filter := bson.M{internal.Field__id: bson.ObjectIdHex(objectNew.ID)}
+func (p personRepository) UpdatePerson(id string, r *interface{}) (template interface{}, error error, status int) {
+	objectNew := p.ToEntityObject(*r)
+	objectNew.Updated = time.Now()
+	filter := bson.M{internal.Field__id: bson.ObjectIdHex(id)}
 	found, _ := p.GetFindPersons(internal.CollectionPerson, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
-		document, _ := p.ToDocument(objectNew.Values)
+		document, _ := p.ToDocument(objectNew)
 		update := bson.M{internal.MongoDB__set: *document}
 		err := p.connMgo.UpdateData(internal.CollectionPerson, filter, update)
 		if err != nil {
-			return objectNew.Values, errors.New(internal.MsgResponseObjectExists), http.StatusConflict
+			return objectNew, errors.New(internal.MsgResponseObjectExists), http.StatusConflict
 		}
 		return objectNew, nil, http.StatusCreated
 	}
@@ -68,10 +68,11 @@ func (p personRepository) ListPersons() (templates []interface{}, error error, s
 }
 
 //Getting Person
-func (p personRepository) GetPerson(r *interface{}) (template interface{}, error error, status int) {
+func (p personRepository) GetPerson(id string) (template interface{}, error error, status int) {
 	collection := internal.CollectionPerson
-	filter, _ := p.ToDocument(*r)
-	found, _ := p.GetFindPersons(collection, *filter, bson.M{}, internal.FieldLastname, internal.OrderAsc)
+	filter := bson.M{internal.Field__id: bson.ObjectIdHex(id)}
+	//filter, _ := p.ToDocument(*r)
+	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldLastname, internal.OrderAsc)
 	if len(found) == 0 {
 		return internal.ValueEmpty, errors.New(internal.MsgResponseNoData), http.StatusInternalServerError
 	}
@@ -79,12 +80,12 @@ func (p personRepository) GetPerson(r *interface{}) (template interface{}, error
 }
 
 //Deleting Person
-func (p personRepository) DeletePerson(r *interface{}) (template interface{}, error error, status int) {
-	objectDelete := p.ToEntityDeleteObject(*r)
-	collection, filter := internal.CollectionPerson, bson.M{internal.Field__id: bson.ObjectIdHex(objectDelete.ID)}
+func (p personRepository) DeletePerson(id string) (template interface{}, error error, status int) {
+	collection := internal.CollectionPerson
+	filter := bson.M{internal.Field__id: bson.ObjectIdHex(id)}
 	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
-		_ = p.connMgo.DeleteData(collection, objectDelete.ID)
+		_ = p.connMgo.DeleteData(collection, id)
 		return found[0], nil, http.StatusCreated
 	}
 	return nil, errors.New(internal.MsgResponseNoData), http.StatusInternalServerError
@@ -116,16 +117,4 @@ func (p personRepository) ToEntityObject(i interface{}) entity.Person {
 		_ = bson.Unmarshal(bsonBytes, &person)
 	}
 	return person
-}
-
-func (p personRepository) ToEntityUpdateObject(i interface{}) entity.UpdatePerson {
-	m, personUpdate := i.(map[string]interface{}), entity.UpdatePerson{}
-	_ = mapstructure.Decode(m, &personUpdate)
-	return personUpdate
-}
-
-func (p personRepository) ToEntityDeleteObject(i interface{}) entity.DeletePerson {
-	m, personDelete := i.(map[string]interface{}), entity.DeletePerson{}
-	_ = mapstructure.Decode(m, &personDelete)
-	return personDelete
 }

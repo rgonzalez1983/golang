@@ -13,12 +13,13 @@ definitions:
         type: string
       created:
         type: string
+      gender:
+        type: string
       id:
         type: string
       lastname:
         type: string
       name:
-        description: ID string `bson:"_id" json:"_id,omitempty"`
         type: string
       updated:
         type: string
@@ -48,18 +49,17 @@ paths:
       summary: Create one person
       tags:
       - CRUD
-  /delete_person:
-    post:
+  /delete_person/{id}:
+    delete:
       consumes:
       - application/json
       description: Delete of one person
       parameters:
-      - description: Delete Person
-        in: body
-        name: parameters
+      - description: ID Person
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/entity.InterfaceAPI'
+        type: string
       produces:
       - application/json
       responses:
@@ -70,18 +70,17 @@ paths:
       summary: Delete one person
       tags:
       - CRUD
-  /get_person:
-    post:
+  /get_person/{id}:
+    get:
       consumes:
       - application/json
       description: Get details of one person
       parameters:
-      - description: Get Person
-        in: body
-        name: parameters
+      - description: ID Person
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/entity.InterfaceAPI'
+        type: string
       produces:
       - application/json
       responses:
@@ -93,7 +92,7 @@ paths:
       tags:
       - CRUD
   /list_persons:
-    post:
+    get:
       consumes:
       - application/json
       description: Get details of all persons
@@ -109,18 +108,23 @@ paths:
       summary: Get details of all persons
       tags:
       - CRUD
-  /update_person:
+  /update_person/{id}:
     post:
       consumes:
       - application/json
       description: Update of one person
       parameters:
+      - description: ID Person
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Update Person
         in: body
         name: parameters
         required: true
         schema:
-          $ref: '#/definitions/entity.InterfaceAPI'
+          $ref: '#/definitions/entity.Person'
       produces:
       - application/json
       responses:

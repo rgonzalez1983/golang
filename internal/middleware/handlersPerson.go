@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"go_project/internal"
 	"go_project/internal/entity"
 	"net/http"
@@ -41,12 +42,14 @@ func (a *App) CreatePerson(w http.ResponseWriter, r *http.Request) {
 // @Tags CRUD
 // @Accept  json
 // @Produce  json
-// @Param parameters body entity.InterfaceAPI true "Update Person"
+// @Param id path string true "ID Person"
+// @Param parameters body entity.Person true "Update Person"
 // @Success 200 {object} entity.InterfaceAPI
-// @Router /update_person [post]
+// @Router /update_person/{id} [post]
 func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, internal.FuncUpdatePerson)
-	data, err, statusCode := a.PersonRepository.UpdatePerson(a.FormatRequestPayload(w, r))
+	id := mux.Vars(r)[internal.KeyId]
+	data, err, statusCode := a.PersonRepository.UpdatePerson(id, a.FormatRequestPayload(w, r))
 	indicator := a.IndicatorType(statusCode)
 	message := func() string {
 		if indicator == internal.ERROR {
@@ -67,7 +70,7 @@ func (a *App) UpdatePerson(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} entity.InterfaceAPI
-// @Router /list_persons [post]
+// @Router /list_persons [get]
 func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, internal.FuncListPersons)
 	data, _, statusCode := a.PersonRepository.ListPersons()
@@ -83,12 +86,13 @@ func (a *App) ListPersons(w http.ResponseWriter, r *http.Request) {
 // @Tags CRUD
 // @Accept  json
 // @Produce  json
-// @Param parameters body entity.InterfaceAPI true "Get Person"
+// @Param id path string true "ID Person"
 // @Success 200 {object} entity.InterfaceAPI
-// @Router /get_person [post]
+// @Router /get_person/{id} [get]
 func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, internal.FuncGetPerson)
-	data, err, statusCode := a.PersonRepository.GetPerson(a.FormatRequestPayload(w, r))
+	id := mux.Vars(r)[internal.KeyId]
+	data, err, statusCode := a.PersonRepository.GetPerson(id)
 	indicator := a.IndicatorType(statusCode)
 	message := func() string {
 		if indicator == internal.ERROR {
@@ -108,12 +112,13 @@ func (a *App) GetPerson(w http.ResponseWriter, r *http.Request) {
 // @Tags CRUD
 // @Accept  json
 // @Produce  json
-// @Param parameters body entity.InterfaceAPI true "Delete Person"
+// @Param id path string true "ID Person"
 // @Success 200 {object} entity.InterfaceAPI
-// @Router /delete_person [post]
+// @Router /delete_person/{id} [delete]
 func (a *App) DeletePerson(w http.ResponseWriter, r *http.Request) {
 	a.ValidateRequest(w, r, internal.FuncDeletePerson)
-	data, err, statusCode := a.PersonRepository.DeletePerson(a.FormatRequestPayload(w, r))
+	id := mux.Vars(r)[internal.KeyId]
+	data, err, statusCode := a.PersonRepository.DeletePerson(id)
 	indicator := a.IndicatorType(statusCode)
 	message := func() string {
 		if indicator == internal.ERROR {

@@ -60,15 +60,17 @@ const (
 	KeyMessage            string = "message"
 	KeyMethod             string = "method"
 	KeyTook               string = "took"
-	KeyValues             string = "values"
 	KeyResponseMessage    string = "Message"
 	KeyResponseStatusCode string = "StatusCode"
 	KeyResponseData       string = "Data"
 	KeyTs                 string = "ts"
 	KeyCaller             string = "caller"
+	KeyId                 string = "id"
 	//http methods
-	HTTP_POST string = "POST"
-	HTTP_GET  string = "GET"
+	HTTP_POST   string = "POST"
+	HTTP_GET    string = "GET"
+	HTTP_PUT    string = "PUT"
+	HTTP_DELETE string = "DELETE"
 	//schemas
 	SchemaHttp string = "http"
 	//misc

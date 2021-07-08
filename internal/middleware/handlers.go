@@ -78,10 +78,10 @@ func (a *App) initializeRoutes() {
 	a.Router.PathPrefix(internal.URLApi).Handler(httpSwagger.WrapHandler)
 	a.Router.HandleFunc(internal.URLIndex, a.getIndex).Methods(internal.HTTP_GET)
 	a.Router.HandleFunc(internal.URLCreatingOne, a.CreatePerson).Methods(internal.HTTP_POST)
-	a.Router.HandleFunc(internal.URLUpdatingOne, a.UpdatePerson).Methods(internal.HTTP_POST)
-	a.Router.HandleFunc(internal.URLGettingOne, a.GetPerson).Methods(internal.HTTP_POST)
-	a.Router.HandleFunc(internal.URLDeletingOne, a.DeletePerson).Methods(internal.HTTP_POST)
-	a.Router.HandleFunc(internal.URLListingAll, a.ListPersons).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLUpdatingOne+"/{"+internal.KeyId+"}", a.UpdatePerson).Methods(internal.HTTP_POST)
+	a.Router.HandleFunc(internal.URLGettingOne+"/{"+internal.KeyId+"}", a.GetPerson).Methods(internal.HTTP_GET)
+	a.Router.HandleFunc(internal.URLDeletingOne+"/{"+internal.KeyId+"}", a.DeletePerson).Methods(internal.HTTP_DELETE)
+	a.Router.HandleFunc(internal.URLListingAll, a.ListPersons).Methods(internal.HTTP_GET)
 }
 
 // swagger

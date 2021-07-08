@@ -328,3 +328,81 @@ ts=2021-07-08T01:38:38.1875801Z caller=handlers.go:113 type=TEST URL=/update_per
 ts=2021-07-08T01:38:38.2117083Z caller=handlers.go:113 method=DeletePerson took=0s
 ts=2021-07-08T01:38:38.234555Z caller=handlers.go:113 type=ERROR URL=/delete_person message="SIN DATOS EXISTENTES"
 ts=2021-07-08T01:38:38.254056Z caller=handlers.go:113 type=TEST URL=/delete_person message="SIN DATOS EXISTENTES"
+ts=2021-07-08T02:18:56.780033Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T02:23:44.5495918Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T02:23:44.6059824Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T02:23:56.2279074Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T02:23:56.2668601Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T03:33:49.8848866Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T03:33:50.3153381Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T03:44:28.2860793Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T03:45:25.9992871Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T03:45:26.0485151Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T03:46:58.057271Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-08T03:47:18.2052965Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T03:47:18.4882369Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T03:47:54.2366781Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T03:47:54.3276664Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T03:50:06.6436974Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-08T03:50:06.8456051Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T03:50:14.4549396Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T03:50:14.6940935Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T03:57:37.5077301Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T03:59:14.0767116Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T03:59:14.1213075Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T03:59:47.5804104Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-08T03:59:47.6737216Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:00:30.0880166Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-08T04:04:13.704372Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-08T04:04:13.8000797Z caller=handlers.go:113 type=ERROR URL=/get_person message="SIN DATOS EXISTENTES"
+ts=2021-07-08T04:16:58.9767813Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:18:06.2446827Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:24:32.2544553Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:24:52.1067462Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:25:16.8102959Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-08T04:25:16.8447115Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:32:46.2639454Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:33:08.2910067Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T04:33:08.3571534Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T04:34:51.2270893Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:35:04.4914071Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-08T04:35:04.5547251Z caller=handlers.go:113 type=SUCCESS URL=/delete_person message="OBJETO BORRADO CORRECTAMENTE"
+ts=2021-07-08T04:36:53.5735913Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T04:36:53.6538895Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T04:37:15.0215228Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T04:37:15.0561103Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T04:37:29.3546929Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-08T04:37:29.3892805Z caller=handlers.go:113 type=ERROR URL=/delete_person message="SIN DATOS EXISTENTES"
+ts=2021-07-08T04:46:20.9715012Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:47:39.6771863Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:48:33.9247059Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-08T04:48:33.9785863Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T04:55:32.9017821Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:55:33.1898162Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T04:55:33.2150713Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T04:55:33.2379953Z caller=handlers.go:113 type=TEST URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T04:55:33.2777336Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-08T04:55:33.2999187Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:55:33.3212163Z caller=handlers.go:113 type=TEST URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:55:33.3417491Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T04:55:33.3649721Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T04:55:33.3871061Z caller=handlers.go:113 type=TEST URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-08T04:55:33.4078185Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-08T04:55:33.4447176Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T04:55:33.464283Z caller=handlers.go:113 type=TEST URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T04:57:00.8956852Z caller=handlers.go:113 type=SUCCESS URL=/ message="STARTING NOW..."
+ts=2021-07-08T04:57:00.9189174Z caller=handlers.go:113 method=ListPersons took=0s
+ts=2021-07-08T04:57:00.9428475Z caller=handlers.go:113 type=SUCCESS URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T04:57:00.975656Z caller=handlers.go:113 type=TEST URL=/list_persons message="LISTANDO TODOS..."
+ts=2021-07-08T04:57:00.9997869Z caller=handlers.go:113 method=GetPerson took=0s
+ts=2021-07-08T04:57:01.0309521Z caller=handlers.go:113 type=SUCCESS URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:57:01.0608428Z caller=handlers.go:113 type=TEST URL=/get_person message="OBTENIENDO UN OBJETO..."
+ts=2021-07-08T04:57:01.0924222Z caller=handlers.go:113 method=CreatePerson took=0s
+ts=2021-07-08T04:57:01.1212461Z caller=handlers.go:113 type=SUCCESS URL=/create_person message="OBJETO INSERTADO CORRECTAMENTE"
+ts=2021-07-08T04:57:01.1464494Z caller=handlers.go:113 type=TEST URL=/create_person message="OBJETO EXISTENTE"
+ts=2021-07-08T04:57:01.1674158Z caller=handlers.go:113 method=UpdatePerson took=0s
+ts=2021-07-08T04:57:01.1936527Z caller=handlers.go:113 type=SUCCESS URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T04:57:01.2146631Z caller=handlers.go:113 type=TEST URL=/update_person message="OBJETO EDITADO CORRECTAMENTE"
+ts=2021-07-08T04:57:01.2384365Z caller=handlers.go:113 method=DeletePerson took=0s
+ts=2021-07-08T04:57:01.261527Z caller=handlers.go:113 type=ERROR URL=/delete_person message="SIN DATOS EXISTENTES"
+ts=2021-07-08T04:57:01.2841038Z caller=handlers.go:113 type=TEST URL=/delete_person message="SIN DATOS EXISTENTES"
