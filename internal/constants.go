@@ -6,6 +6,7 @@ const (
 	MONGO_HOST     string = "MONGO_HOST"
 	MONGO_DATABASE string = "MONGO_DATABASE"
 	MONGO_PORT     string = "MONGO_PORT"
+	ORIGIN_ALLOWED string = "ORIGIN_ALLOWED"
 	//messages
 	MsgResponseStartProcess     string = "Start process -->   "
 	MsgResponseStartApplication string = "Starting the application...."
@@ -20,6 +21,9 @@ const (
 	MsgResponseServerError      string = "ERROR DE SERVIDOR"
 	MsgResponseNoData           string = "SIN DATOS EXISTENTES"
 	MsgResponseInvalidRequest   string = "PAYLOAD/REQUEST INVALIDO"
+	MsgApiRestTitle             string = "API Restful Example (Go with MongoDB)"
+	MsgApiRestDescription       string = "Simple CRUD using a data from persons as example"
+	MsgApiRestVersion1          string = "1.0"
 	//URLs
 	URLStartingNow string = "/"
 	URLApi         string = "/api"
@@ -29,6 +33,7 @@ const (
 	URLDeletingOne string = "/delete_person"
 	URLCreatingOne string = "/create_person"
 	URLUpdatingOne string = "/update_person"
+	URLLocalhost   string = "localhost"
 	//types responses
 	ERROR   string = "ERROR"
 	SUCCESS string = "SUCCESS"
@@ -59,9 +64,13 @@ const (
 	KeyResponseMessage    string = "Message"
 	KeyResponseStatusCode string = "StatusCode"
 	KeyResponseData       string = "Data"
+	KeyTs                 string = "ts"
+	KeyCaller             string = "caller"
 	//http methods
 	HTTP_POST string = "POST"
 	HTTP_GET  string = "GET"
+	//schemas
+	SchemaHttp string = "http"
 	//misc
 	ValueEmpty string = ""
 )

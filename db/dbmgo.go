@@ -30,13 +30,16 @@ func NewConnection(info *mgo.DialInfo) (*MongoConnection, error) {
 	return &MongoConnection{sess, sync.Mutex{}}, nil
 }
 
-// Deleting Data
-func (con *MongoConnection) DeleteData(collection string, id string) error {
-
+//Create Connection
+func (con *MongoConnection) CreateConnection() *mgo.Database {
 	con.m.Lock()
 	defer con.m.Unlock()
+	return con.DB(BdName)
+}
 
-	c := con.DB(BdName).C(collection)
+// Deleting Data
+func (con *MongoConnection) DeleteData(collection string, id string) error {
+	c := con.CreateConnection().C(collection)
 	oid := bson.ObjectIdHex(id)
 	err := c.RemoveId(oid)
 	return err
@@ -44,54 +47,51 @@ func (con *MongoConnection) DeleteData(collection string, id string) error {
 
 //Counting Data
 func (con *MongoConnection) CountData(collection string, find string) (col int, err error) {
-
-	con.m.Lock()
-	defer con.m.Unlock()
-	c := con
-
+	c := con.CreateConnection().C(collection)
 	if find != "" {
-		col, err = c.DB(BdName).C(collection).Find(bson.M{}).Count()
+		col, err = c.Find(bson.M{}).Count()
 	} else {
-		col, err = c.DB(BdName).C(collection).Count()
+		col, err = c.Count()
 	}
 	return col, err
 }
 
 //Finding Data
 func (con *MongoConnection) GetFindData(collection string, query bson.M, selector bson.M, fieldSort string, orderSort string) ([]interface{}, error) {
-
-	con.m.Lock()
-	defer con.m.Unlock()
+	c := con.CreateConnection().C(collection)
 	result := make([]interface{}, 0)
-	err := con.DB(BdName).C(collection).Find(query).Select(selector).Sort(orderSort + fieldSort).All(&result)
+	err := c.Find(query).Select(selector).Sort(orderSort + fieldSort).All(&result)
 	return result, err
 }
 
 //Inserting Data
 func (con *MongoConnection) InsertData(collection string, ui interface{}) (err error) {
-
-	con.m.Lock()
-	defer con.m.Unlock()
-	c := con
-
-	col := c.DB(BdName).C(collection)
+	c := con.CreateConnection().C(collection)
 	event := ui
-
-	err = col.Insert(&event)
+	err = c.Insert(&event)
 	return err
 }
 
 //Updating Data
 func (con *MongoConnection) UpdateData(collection string, ui interface{}, updt interface{}) (err error) {
-
-	con.m.Lock()
-	defer con.m.Unlock()
-	c := con
-
-	col := c.DB(BdName).C(collection)
+	c := con.CreateConnection().C(collection)
 	event := ui
 	update := updt
+	err = c.Update(&event, &update)
+	return err
+}
 
-	err = col.Update(&event, &update)
+//Indexes
+func (con *MongoConnection) EnsureIndex(collection string, arrayIndexes []string) (err error) {
+	c := con.CreateConnection().C(collection)
+	for _, key := range arrayIndexes {
+		index := mgo.Index{
+			Key:    []string{key},
+			Unique: true,
+		}
+		if err := c.EnsureIndex(index); err != nil {
+			return err
+		}
+	}
 	return err
 }

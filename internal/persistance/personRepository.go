@@ -25,6 +25,7 @@ type personRepository struct {
 }
 
 func NewPersonRepository(connMgo *db.MongoConnection) PersonRepository {
+	_ = connMgo.EnsureIndex(internal.CollectionPerson, []string{internal.FieldCi})
 	return &personRepository{
 		connMgo: connMgo,
 	}
@@ -33,34 +34,27 @@ func NewPersonRepository(connMgo *db.MongoConnection) PersonRepository {
 //Creating Person
 func (p personRepository) CreatePerson(r *interface{}) (template interface{}, error error, status int) {
 	object := p.ToEntityObject(*r)
-	collection, filter := internal.CollectionPerson, bson.M{internal.FieldCi: object.CI}
 	object.Created, object.Updated = time.Now(), time.Now()
-	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
-	if len(found) > 0 {
-		return object, errors.New(internal.MsgResponseObjectExists), http.StatusInternalServerError
+	err := p.connMgo.InsertData(internal.CollectionPerson, object)
+	if err != nil {
+		return object, errors.New(internal.MsgResponseObjectExists), http.StatusConflict
 	}
-	_ = p.connMgo.InsertData(collection, object)
 	return object, nil, http.StatusCreated
 }
 
 //Updating Person
 func (p personRepository) UpdatePerson(r *interface{}) (template interface{}, error error, status int) {
 	objectNew := p.ToEntityUpdateObject(*r)
-	collection, filter := internal.CollectionPerson, bson.M{internal.FieldCi: objectNew.Values.CI}
 	objectNew.Values.Updated = time.Now()
-	found, _ := p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
-	if len(found) > 0 {
-		objectOld := p.ToEntityObject(found[0])
-		if objectOld.ID.String() != objectNew.ID {
-			return objectNew.Values, errors.New(internal.MsgResponseObjectExists), http.StatusInternalServerError
-		}
-	}
-	filter = bson.M{internal.Field__id: bson.ObjectIdHex(objectNew.ID)}
-	found, _ = p.GetFindPersons(collection, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
+	filter := bson.M{internal.Field__id: bson.ObjectIdHex(objectNew.ID)}
+	found, _ := p.GetFindPersons(internal.CollectionPerson, filter, bson.M{}, internal.FieldUpdated, internal.OrderDesc)
 	if len(found) > 0 {
 		document, _ := p.ToDocument(objectNew.Values)
 		update := bson.M{internal.MongoDB__set: *document}
-		_ = p.connMgo.UpdateData(collection, filter, update)
+		err := p.connMgo.UpdateData(internal.CollectionPerson, filter, update)
+		if err != nil {
+			return objectNew.Values, errors.New(internal.MsgResponseObjectExists), http.StatusConflict
+		}
 		return objectNew, nil, http.StatusCreated
 	}
 	return objectNew, errors.New(internal.MsgResponseServerError), http.StatusInternalServerError

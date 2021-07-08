@@ -38,7 +38,7 @@ func CORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set headers
 		w.Header().Set("Access-Control-Allow-Headers:", "*")
-		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ORIGIN_ALLOWED"))
+		w.Header().Set("Access-Control-Allow-Origin", os.Getenv(internal.ORIGIN_ALLOWED))
 		w.Header().Set("Access-Control-Allow-Methods", "*")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
@@ -51,7 +51,7 @@ func CORS(next http.Handler) http.Handler {
 
 func (a *App) Initialize(_user, _password string) (err error) {
 	fmt.Println(internal.MsgResponseStartApplication)
-	host := os.Getenv(internal.MONGO_HOST) + os.Getenv(internal.MONGO_PORT)
+	host := os.Getenv(internal.MONGO_HOST) + ":" + os.Getenv(internal.MONGO_PORT)
 	dbs := os.Getenv(internal.MONGO_DATABASE)
 	info := &mgo.DialInfo{
 		Addrs:    []string{host},
@@ -86,12 +86,12 @@ func (a *App) initializeRoutes() {
 
 // swagger
 func (a *App) initializeSwagger() {
-	docs.SwaggerInfo.Title = "API Restful Example (Go with MongoDB)"
-	docs.SwaggerInfo.Description = "Simple CRUD using a data from persons as example"
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost:9090"
-	docs.SwaggerInfo.BasePath = "/"
-	docs.SwaggerInfo.Schemes = []string{"http"}
+	docs.SwaggerInfo.Title = internal.MsgApiRestTitle
+	docs.SwaggerInfo.Description = internal.MsgApiRestDescription
+	docs.SwaggerInfo.Version = internal.MsgApiRestVersion1
+	docs.SwaggerInfo.Host = internal.URLLocalhost + ":" + os.Getenv(internal.APP_PORT)
+	docs.SwaggerInfo.BasePath = internal.URLStartingNow
+	docs.SwaggerInfo.Schemes = []string{internal.SchemaHttp}
 }
 
 // Logger
@@ -101,8 +101,8 @@ func (a *App) initializeLogger() (f *os.File) {
 	var logger log.Logger
 	{
 		logger = log.NewLogfmtLogger(wrt)
-		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
-		logger = log.With(logger, "caller", log.DefaultCaller)
+		logger = log.With(logger, internal.KeyTs, log.DefaultTimestampUTC)
+		logger = log.With(logger, internal.KeyCaller, log.DefaultCaller)
 	}
 	a.Logg = logger
 	return f
@@ -123,7 +123,7 @@ func (a *App) initializeRepository() {
 func (a *App) getIndex(w http.ResponseWriter, r *http.Request) {
 
 	item := &entity.JsonResponse{
-		Message:    "API Restful Example (Go with MongoDB)",
+		Message:    internal.MsgApiRestTitle,
 		StatusCode: http.StatusOK,
 	}
 	respondWithJSON(w, http.StatusOK, item)

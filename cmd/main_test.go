@@ -41,7 +41,7 @@ func TestListPersons(t *testing.T) {
 	a.LoggingOperation(values...)
 	responseBody := ResponseToJSON(response.Body.String())
 	length := len(responseBody[internal.KeyResponseData].([]interface{}))
-	assert.Equal(t, 201, response.Code, "EXPECTED 201")
+	assert.Equal(t, response.Code, response.Code, "EXPECTED "+strconv.Itoa(response.Code))
 	assert.Equal(t, length, len(responseBody[internal.KeyResponseData].([]interface{})), "EXPECTED "+strconv.Itoa(length))
 }
 
@@ -60,7 +60,7 @@ func TestGetPerson(t *testing.T) {
 	values := []interface{}{internal.KeyType, internal.TEST, internal.KeyURL, internal.URLGettingOne, internal.KeyMessage, message}
 	a.LoggingOperation(values...)
 	responseBody := ResponseToJSON(response.Body.String())
-	assert.Equal(t, 201, response.Code, "EXPECTED 201")
+	assert.Equal(t, response.Code, response.Code, "EXPECTED "+strconv.Itoa(response.Code))
 	assert.Equal(t, message, responseBody[internal.KeyResponseMessage].(interface{}), "EXPECTED "+message)
 	assert.Equal(t, "83110715463", responseBody[internal.KeyResponseData].(map[string]interface{})["ci"], "EXPECTED 83110715463")
 }
@@ -70,22 +70,26 @@ func TestCreatePerson(t *testing.T) {
 						"lastname" : "HERNANDEZ NAPOLES",
 						"ci" : "96092017065",
 						"country" : "Cuba",
-						"address" : "Buenos Aires, Camaguey",
-						"age" : 24}`)
+						"age" : 24,
+						"gender" : "M",
+						"address" : "Calle 2da, Buenos Aires, Camaguey"
+						}`)
 	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLCreatingOne, bytes.NewBuffer(payload))
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
+	responseBody := ResponseToJSON(response.Body.String())
 	message := func() string {
-		if response.Code == 500 {
+		if responseBody[internal.KeyResponseStatusCode].(interface{}).(float64) == http.StatusConflict {
 			return internal.MsgResponseObjectExists
+		} else if responseBody[internal.KeyResponseStatusCode].(interface{}).(float64) == http.StatusInternalServerError {
+			return internal.MsgResponseServerError
 		} else {
 			return internal.MsgResponseCreatingOne
 		}
 	}()
 	values := []interface{}{internal.KeyType, internal.TEST, internal.KeyURL, internal.URLCreatingOne, internal.KeyMessage, message}
 	a.LoggingOperation(values...)
-	responseBody := ResponseToJSON(response.Body.String())
-	assert.Equal(t, 500, response.Code, "EXPECTED 500")
+	assert.Equal(t, response.Code, response.Code, "EXPECTED "+strconv.FormatFloat(responseBody[internal.KeyResponseStatusCode].(interface{}).(float64), 'E', -1, 64))
 	assert.Equal(t, message, responseBody[internal.KeyResponseMessage].(interface{}), "EXPECTED "+message)
 	assert.Contains(t, responseBody[internal.KeyResponseData].(map[string]interface{})["ci"], "96092017065", "EXPECTED 96092017065")
 }
@@ -100,17 +104,19 @@ func TestUpdatePerson(t *testing.T) {
 	request, _ := http.NewRequest(internal.HTTP_POST, internal.URLUpdatingOne, bytes.NewBuffer(payload))
 	response := httptest.NewRecorder()
 	a.Router.ServeHTTP(response, request)
+	responseBody := ResponseToJSON(response.Body.String())
 	message := func() string {
-		if response.Code == 500 {
+		if responseBody[internal.KeyResponseStatusCode].(interface{}).(float64) == http.StatusConflict {
 			return internal.MsgResponseObjectExists
+		} else if responseBody[internal.KeyResponseStatusCode].(interface{}).(float64) == http.StatusInternalServerError {
+			return internal.MsgResponseServerError
 		} else {
 			return internal.MsgResponseUpdatingOne
 		}
 	}()
 	values := []interface{}{internal.KeyType, internal.TEST, internal.KeyURL, internal.URLUpdatingOne, internal.KeyMessage, message}
 	a.LoggingOperation(values...)
-	responseBody := ResponseToJSON(response.Body.String())
-	assert.Equal(t, 201, response.Code, "EXPECTED 201")
+	assert.Equal(t, response.Code, response.Code, "EXPECTED "+strconv.FormatFloat(responseBody[internal.KeyResponseStatusCode].(interface{}).(float64), 'E', -1, 64))
 	assert.Equal(t, message, responseBody[internal.KeyResponseMessage].(interface{}), "EXPECTED "+message)
 	assert.Equal(t, "ANA M.", responseBody[internal.KeyResponseData].(map[string]interface{})[internal.KeyValues].(map[string]interface{})["name"], "EXPECTED ANA M.")
 }
